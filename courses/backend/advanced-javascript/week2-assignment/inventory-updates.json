@@ -1,0 +1,7 @@
+[
+  { "teaId": 1, "change": -20, "reason": "sale" },
+  { "teaId": 1, "change": 50, "reason": "restock" },
+  { "teaId": 8, "change": -10, "reason": "sale" },
+  { "teaId": 3, "change": -100, "reason": "sale" },
+  { "teaId": 8, "change": 30, "reason": "restock" }
+]
