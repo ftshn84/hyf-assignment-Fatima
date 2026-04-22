@@ -111,7 +111,7 @@ VALUES (
 );
 INSERT INTO user_task (user_id, task_id)
 VALUES ( (SELECT id FROM user WHERE name = 'Fatima Sharifi'), 
-         (SELECT MAX(id) FROM task) );
+         (SELECT id FROM task WHERE title = 'Learn SQL') );
 --Chaking if my name and tasks are there
 SELECT 
     t.id,
