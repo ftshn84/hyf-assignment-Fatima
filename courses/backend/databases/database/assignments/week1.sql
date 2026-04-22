@@ -301,7 +301,7 @@ FROM category c
 LEFT JOIN task_category tc ON c.id = tc.category_id
 GROUP BY c.id
 ORDER BY task_count DESC
-LIMIT 2;
+LIMIT 1;
 --4-Get all high priority tasks that are either "In Progress" or "To Do"
 ---TEST
 SELECT id, title, priority
@@ -311,7 +311,7 @@ WHERE priority = 'High';
 SELECT t.id, t.title, s.name AS status
 FROM task t
 JOIN status s ON t.status_id = s.id
-WHERE s.name IN ('In Progress', 'To Do');
+WHERE s.name IN ('In progress', 'To Do');
 
 SELECT * FROM status;
 
@@ -320,7 +320,7 @@ SET status_id = (SELECT id FROM status WHERE name = 'To Do')
 WHERE title = 'Deploy Application';
 --TEST
 UPDATE task
-SET status_id = (SELECT id FROM status WHERE name = 'In Progress')
+SET status_id = (SELECT id FROM status WHERE name = 'In progress')
 WHERE title = 'Write Unit Tests';
 
 SELECT 
@@ -333,7 +333,7 @@ SELECT
 FROM task t
 JOIN status s ON t.status_id = s.id
 WHERE t.priority = 'High'
-  AND s.name IN ('In Progress', 'To Do');
+  AND s.name IN ('In progress', 'To Do');
 --5-Find users who have tasks in more than one category--IT is empty dont know what hapend befor in some places I need to over look
 SELECT 
     u.id AS user_id,
