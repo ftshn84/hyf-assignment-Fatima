@@ -1,0 +1,12 @@
+{
+  "type": "module",
+  "devDependencies": {
+    "cross-env": "^10.1.0"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "knex": "^3.2.9",
+    "pg": "^8.20.0",
+    "sqlite3": "^6.0.1"
+  }
+}
