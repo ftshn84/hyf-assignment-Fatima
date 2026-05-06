@@ -1,0 +1,357 @@
+{
+  "info": {
+    "_postman_id": "4b81f5f1-2f85-46bd-9d71-7a8b69931c9f",
+    "name": "HYF Snippets API (Assignment)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET all snippets",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/snippets",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "snippets"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "const body = pm.response.json();",
+              "pm.test('Response is an array', function () {",
+              "  pm.expect(Array.isArray(body)).to.eql(true);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "POST create snippet",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"user_id\": 1,\n  \"title\": \"Postman created snippet\",\n  \"contents\": \"Created from Postman collection\",\n  \"is_private\": false,\n  \"tags\": [1]\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/snippets",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "snippets"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 201', function () {",
+              "  pm.response.to.have.status(201);",
+              "});",
+              "const body = pm.response.json();",
+              "pm.test('Created snippet has id', function () {",
+              "  pm.expect(body).to.have.property('id');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET snippet by id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/snippets/1",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "snippets",
+            "1"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "const body = pm.response.json();",
+              "pm.test('Snippet object returned', function () {",
+              "  pm.expect(body).to.have.property('id');",
+              "  pm.expect(body).to.have.property('title');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "PUT update snippet by id",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Updated from Postman\",\n  \"contents\": \"Updated body\",\n  \"is_private\": false\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/snippets/1",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "snippets",
+            "1"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "const body = pm.response.json();",
+              "pm.test('Updated snippet returned', function () {",
+              "  pm.expect(body).to.have.property('id');",
+              "  pm.expect(body).to.have.property('title');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "DELETE snippet by id",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/snippets/1",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "snippets",
+            "1"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 204', function () {",
+              "  pm.response.to.have.status(204);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET public snippets",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/snippets/public",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "snippets",
+            "public"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "const body = pm.response.json();",
+              "pm.test('Response is an array', function () {",
+              "  pm.expect(Array.isArray(body)).to.eql(true);",
+              "});",
+              "pm.test('All snippets are public', function () {",
+              "  body.forEach(function (item) {",
+              "    pm.expect(item.is_private).to.eql(false);",
+              "  });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET snippets by tag",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/snippets/by-tag/javascript",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "snippets",
+            "by-tag",
+            "javascript"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "const body = pm.response.json();",
+              "pm.test('Response is an array', function () {",
+              "  pm.expect(Array.isArray(body)).to.eql(true);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET snippets unsafe sort (valid)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/snippets/unsafe?sort=created_at%20desc",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "snippets",
+            "unsafe"
+          ],
+          "query": [
+            {
+              "key": "sort",
+              "value": "created_at desc"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "const body = pm.response.json();",
+              "pm.test('Response contains data array', function () {",
+              "  pm.expect(body).to.have.property('data');",
+              "  pm.expect(Array.isArray(body.data)).to.eql(true);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET snippets unsafe sort (invalid)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/snippets/unsafe?sort=id%20desc",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "snippets",
+            "unsafe"
+          ],
+          "query": [
+            {
+              "key": "sort",
+              "value": "id desc"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 400', function () {",
+              "  pm.response.to.have.status(400);",
+              "});",
+              "const body = pm.response.json();",
+              "pm.test('Error response shape', function () {",
+              "  pm.expect(body).to.have.property('error');",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

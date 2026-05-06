@@ -1,0 +1,339 @@
+openapi: 3.0.3
+info:
+  title: Snippets API
+  version: 1.0.0
+  description: Minimal OpenAPI description for core snippets endpoints.
+servers:
+  - url: http://localhost:3000
+paths:
+  /api/snippets:
+    get:
+      summary: List snippets
+      responses:
+        '200':
+          description: Snippets list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Snippet'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      summary: Create snippet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SnippetCreateRequest'
+      responses:
+        '201':
+          description: Snippet created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Snippet'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/snippets/public:
+    get:
+      summary: List only public snippets
+      responses:
+        '200':
+          description: Public snippets list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Snippet'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/snippets/by-tag/{tag}:
+    get:
+      summary: List snippets by tag name
+      parameters:
+        - in: path
+          name: tag
+          required: true
+          schema:
+            type: string
+          description: Tag name to filter snippets by.
+      responses:
+        '200':
+          description: Snippets that contain the given tag
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Snippet'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/snippets/unsafe:
+    get:
+      summary: Demo sorting endpoint with validated sort query
+      parameters:
+        - in: query
+          name: sort
+          required: false
+          schema:
+            type: string
+          description: Sort value in format "created_at asc|desc" or "title asc|desc".
+      responses:
+        '200':
+          description: Raw snippets data sorted by valid sort parameter
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SnippetRow'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/snippets/{id}:
+    get:
+      summary: Get snippet by id
+      parameters:
+        - $ref: '#/components/parameters/SnippetIdParam'
+      responses:
+        '200':
+          description: Snippet found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Snippet'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      summary: Update snippet by id
+      parameters:
+        - $ref: '#/components/parameters/SnippetIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SnippetUpdateRequest'
+      responses:
+        '200':
+          description: Snippet updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Snippet'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      summary: Delete snippet by id
+      parameters:
+        - $ref: '#/components/parameters/SnippetIdParam'
+      responses:
+        '204':
+          description: Snippet deleted
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  parameters:
+    SnippetIdParam:
+      in: path
+      name: id
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+      description: Numeric snippet id.
+
+  responses:
+    BadRequest:
+      description: Incorrect request input
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error: Invalid request
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error: Snippet not found
+    InternalServerError:
+      description: Unexpected server or database issue
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error: Internal server error
+
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+
+    UserSummary:
+      type: object
+      required:
+        - id
+        - first_name
+        - last_name
+      properties:
+        id:
+          type: integer
+          minimum: 1
+        first_name:
+          type: string
+        last_name:
+          type: string
+
+    Tag:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          minimum: 1
+        name:
+          type: string
+
+    Snippet:
+      type: object
+      required:
+        - id
+        - created_at
+        - title
+        - contents
+        - is_private
+        - user
+        - tags
+      properties:
+        id:
+          type: integer
+          minimum: 1
+        created_at:
+          type: string
+          description: Timestamp as returned by the DB.
+        updated_at:
+          type: string
+          nullable: true
+        title:
+          type: string
+        contents:
+          type: string
+        is_private:
+          type: boolean
+        user:
+          $ref: '#/components/schemas/UserSummary'
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+
+    SnippetRow:
+      type: object
+      description: Raw snippets row returned by /api/snippets/unsafe.
+      properties:
+        id:
+          type: integer
+          minimum: 1
+        created_at:
+          type: string
+        updated_at:
+          type: string
+          nullable: true
+        user_id:
+          type: integer
+          minimum: 1
+        title:
+          type: string
+        contents:
+          type: string
+        is_private:
+          type: boolean
+
+    SnippetCreateRequest:
+      type: object
+      required:
+        - user_id
+        - title
+        - contents
+      properties:
+        user_id:
+          type: integer
+          minimum: 1
+        title:
+          type: string
+          minLength: 1
+        contents:
+          type: string
+          minLength: 1
+        is_private:
+          type: boolean
+        tags:
+          type: array
+          items:
+            type: integer
+            minimum: 1
+
+    SnippetUpdateRequest:
+      type: object
+      description: At least one field must be provided.
+      properties:
+        user_id:
+          type: integer
+          minimum: 1
+        title:
+          type: string
+          minLength: 1
+        contents:
+          type: string
+          minLength: 1
+        is_private:
+          type: boolean
+        tags:
+          type: array
+          items:
+            type: integer
+            minimum: 1
